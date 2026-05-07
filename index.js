@@ -57,14 +57,14 @@ async function run() {
     })
 
     // post 
-    app.post('/users',async(req,res)=>{
-      const newUser=req.body;
-      
+    app.post('/users', async (req, res) => {
+      const newUser = req.body;
+
       // user to be inserted
       console.log(newUser)
-      
 
-      const result =await database.insertOne(newUser);
+
+      const result = await database.insertOne(newUser);
       res.send(result);
     })
 
@@ -75,6 +75,27 @@ async function run() {
       }
       const result = await database.deleteOne(query);
       res.send(result);
+    })
+
+    // update-user
+    app.patch('/users/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = {
+        _id: new ObjectId(id)
+      }
+      const modifiedInfo = req.body;
+      const updatedDoc = {
+        $set: {
+          name: modifiedInfo.name,
+          email: modifiedInfo.email,
+          role: modifiedInfo.role
+        }
+      }
+
+      const result = await database.updateOne(filter,updatedDoc);
+      res.send(result)
+
+
     })
 
     // Send a ping to confirm a successful connection
